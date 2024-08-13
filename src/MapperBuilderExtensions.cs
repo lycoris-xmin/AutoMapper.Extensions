@@ -48,6 +48,7 @@ namespace Lycoris.AutoMapper.Extensions
                 AutoMapperProfileStore.AddOrUpdateSingle<TSource, TDestination>();
             else
                 AutoMapperProfileStore.AddOrUpdate<TSource, TDestination>();
+
             return services;
         }
 
@@ -65,6 +66,7 @@ namespace Lycoris.AutoMapper.Extensions
                 AutoMapperProfileStore.AddOrUpdateSingle(source, destination);
             else
                 AutoMapperProfileStore.AddOrUpdate(source, destination);
+
             return services;
         }
 

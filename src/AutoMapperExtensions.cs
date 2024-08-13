@@ -22,7 +22,7 @@ namespace Lycoris.AutoMapper.Extensions
         /// 添加AutoMapper扩展
         /// </summary>
         /// <param name="applicationBuilder"></param>
-        public static void UseAutoMapperExtensions(this IApplicationBuilder applicationBuilder) => _serviceProvider = applicationBuilder.ApplicationServices;
+        public static void UseAutoMapperExtensions(this WebApplication applicationBuilder) => _serviceProvider = applicationBuilder.Services;
 
         /// <summary>
         /// 实体映射
