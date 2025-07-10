@@ -4,12 +4,12 @@
 		<TargetFrameworks>net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>$(AssemblyName)</Title>
 		<Authors>Lycoris</Authors>
 		<PackageIcon></PackageIcon>
 		<PackageReadmeFile></PackageReadmeFile>
-		<VersionPrefix>8.0.0-rc1.0</VersionPrefix>
+		<VersionPrefix>8.1.0</VersionPrefix>
 		<Description>AutoMapper一些封装扩展，缓慢更新中...</Description>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
