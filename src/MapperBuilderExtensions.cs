@@ -75,9 +75,9 @@ namespace Lycoris.AutoMapper.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IServiceCollection AddMapperProfile<T>(this IServiceCollection services) where T : Profile
+        public static IServiceCollection AddMapperProfile<T>(this IServiceCollection services) where T : Profile, new()
         {
-            services.AddAutoMapper(typeof(T));
+            services.AddAutoMapper(opt => opt.AddProfile<T>());
             return services;
         }
     }

@@ -25,6 +25,12 @@ namespace Lycoris.AutoMapper.Extensions
         public static void UseAutoMapperExtensions(this WebApplication applicationBuilder) => _serviceProvider = applicationBuilder.Services;
 
         /// <summary>
+        /// 添加AutoMapper扩展
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        public static void UseAutoMapperExtensions(this IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
+
+        /// <summary>
         /// 实体映射
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
@@ -69,7 +75,7 @@ namespace Lycoris.AutoMapper.Extensions
 
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
             var destiantion = mapper.Map<TDestination>(source);
-            action(destiantion);
+            action.Invoke(destiantion);
             return destiantion;
         }
 

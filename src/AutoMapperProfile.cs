@@ -21,6 +21,37 @@ namespace Lycoris.AutoMapper.Extensions
         }
 
         /// <summary>
+        /// 文件大小单位 字节转适当单位
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        protected string ConvertBytesToReadableSize(long? bytes)
+        {
+            bytes ??= 0;
+
+            if (bytes < 1024)
+            {
+                return $"{bytes} B"; // 小于 1 KB，返回字节
+            }
+            else if (bytes < 1024 * 1024)
+            {
+                return $"{(double)bytes / 1024:F2} KB"; // 小于 1 MB，返回 KB
+            }
+            else if (bytes < 1024 * 1024 * 1024)
+            {
+                return $"{(double)bytes / (1024 * 1024):F2} MB"; // 小于 1 GB，返回 MB
+            }
+            else if (bytes < 1024L * 1024 * 1024 * 1024)
+            {
+                return $"{(double)bytes / (1024 * 1024 * 1024):F2} GB"; // 小于 1 TB，返回 GB
+            }
+            else
+            {
+                return $"{(double)bytes / (1024L * 1024 * 1024 * 1024):F2} TB"; // 大于等于 1 TB，返回 TB
+            }
+        }
+
+        /// <summary>
         /// 字符串转枚举
         /// </summary>
         /// <typeparam name="T"></typeparam>

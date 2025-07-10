@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B18077F9-DA2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lycoris.AutoMapper.Extensions", "src\Lycoris.AutoMapper.Extensions.csproj", "{AB2B1CA0-881B-4462-B9F4-0F63868522FA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{517145B6-3726-45EE-BB6E-E87552D16A31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +21,17 @@ Global
 		{AB2B1CA0-881B-4462-B9F4-0F63868522FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB2B1CA0-881B-4462-B9F4-0F63868522FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB2B1CA0-881B-4462-B9F4-0F63868522FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{517145B6-3726-45EE-BB6E-E87552D16A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{517145B6-3726-45EE-BB6E-E87552D16A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{517145B6-3726-45EE-BB6E-E87552D16A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{517145B6-3726-45EE-BB6E-E87552D16A31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AB2B1CA0-881B-4462-B9F4-0F63868522FA} = {B18077F9-DA28-4C5F-AA30-84EF851A5976}
+		{517145B6-3726-45EE-BB6E-E87552D16A31} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA56E36C-E4DA-4505-A315-DCA0B0884D44}

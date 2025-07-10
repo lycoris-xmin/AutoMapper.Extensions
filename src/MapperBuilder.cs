@@ -86,8 +86,15 @@ namespace Lycoris.AutoMapper.Extensions
         /// </summary>
         internal void BuildMapper()
         {
-            this.services.AddAutoMapper(Mapper.ToArray());
-            //this.services.AddAutoMapper(x=>x.AddProfile())
+            this.services.AddAutoMapper(opt =>
+            {
+                var maps = new List<Profile>();
+
+                foreach (var item in Mapper)
+                    maps.Add((Activator.CreateInstance(item) as Profile)!);
+
+                opt.AddProfiles(maps);
+            });
         }
     }
 }
