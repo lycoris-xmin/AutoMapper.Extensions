@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace Lycoris.AutoMapper.Extensions
 {
@@ -43,6 +44,7 @@ namespace Lycoris.AutoMapper.Extensions
                 throw new ArgumentNullException("please use app.UseAutoMapperExtensions reference extension", nameof(IServiceProvider));
 
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
+
             return mapper.Map<TSource, TDestination>(source);
         }
 
@@ -58,6 +60,7 @@ namespace Lycoris.AutoMapper.Extensions
                 throw new ArgumentNullException("please use app.UseAutoMapperExtensions reference extension", nameof(IServiceProvider));
 
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
+
             return mapper.Map<TDestination>(source);
         }
 
@@ -66,16 +69,40 @@ namespace Lycoris.AutoMapper.Extensions
         /// </summary>
         /// <typeparam name="TDestination"></typeparam>
         /// <param name="source"></param>
-        /// <param name="action"></param>
+        /// <param name="configure"></param>
         /// <returns></returns>
-        public static TDestination ToMap<TDestination>(this object source, Action<TDestination> action)
+        public static TDestination ToMap<TDestination>(this object source, Action<TDestination> configure)
         {
             if (_serviceProvider == null)
                 throw new ArgumentNullException("please use app.UseAutoMapperExtensions reference extension", nameof(IServiceProvider));
 
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
+
             var destiantion = mapper.Map<TDestination>(source);
-            action.Invoke(destiantion);
+
+            configure.Invoke(destiantion);
+
+            return destiantion;
+        }
+
+        /// <summary>
+        /// 实体映射
+        /// </summary>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        public static async Task<TDestination> ToMapAsync<TDestination>(this object source, Func<TDestination, Task> configure)
+        {
+            if (_serviceProvider == null)
+                throw new ArgumentNullException("please use app.UseAutoMapperExtensions reference extension", nameof(IServiceProvider));
+
+            var mapper = _serviceProvider.GetRequiredService<IMapper>();
+
+            var destiantion = mapper.Map<TDestination>(source);
+
+            await configure.Invoke(destiantion);
+
             return destiantion;
         }
 
@@ -91,6 +118,7 @@ namespace Lycoris.AutoMapper.Extensions
                 throw new ArgumentNullException("please use app.UseAutoMapperExtensions reference extension", nameof(IServiceProvider));
 
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
+
             return mapper.Map<List<TDestination>>(source);
         }
 
@@ -107,7 +135,53 @@ namespace Lycoris.AutoMapper.Extensions
                 throw new ArgumentNullException("please use app.UseAutoMapperExtensions reference extension", nameof(IServiceProvider));
 
             var mapper = _serviceProvider.GetRequiredService<IMapper>();
+
             return mapper.Map<List<TDestination>>(source);
+        }
+
+        /// <summary>
+        /// 实体映射
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        public static List<TDestination> ToMapList<TSource, TDestination>(this IEnumerable<TSource> source, Action<TDestination> configure)
+        {
+            if (_serviceProvider == null)
+                throw new ArgumentNullException("please use app.UseAutoMapperExtensions reference extension", nameof(IServiceProvider));
+
+            var mapper = _serviceProvider.GetRequiredService<IMapper>();
+
+            var destiantion = mapper.Map<List<TDestination>>(source);
+
+            destiantion.ForEach(x => configure.Invoke(x));
+
+            return destiantion;
+        }
+
+        /// <summary>
+        /// 实体映射
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TDestination"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="configure"></param>
+        /// <returns></returns>
+        public static async Task<List<TDestination>> ToMapListAsync<TSource, TDestination>(this IEnumerable<TSource> source, Func<TDestination, Task> configure)
+        {
+            if (_serviceProvider == null)
+                throw new ArgumentNullException("please use app.UseAutoMapperExtensions reference extension", nameof(IServiceProvider));
+
+            var mapper = _serviceProvider.GetRequiredService<IMapper>();
+
+            var destiantion = mapper.Map<List<TDestination>>(source);
+
+            foreach (var item in destiantion)
+                await configure.Invoke(item);
+
+            return destiantion;
         }
     }
 }

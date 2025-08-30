@@ -9,7 +9,7 @@
 		<Authors>Lycoris</Authors>
 		<PackageIcon></PackageIcon>
 		<PackageReadmeFile></PackageReadmeFile>
-		<VersionPrefix>8.1.0</VersionPrefix>
+		<VersionPrefix>8.1.1</VersionPrefix>
 		<Description>AutoMapper一些封装扩展，缓慢更新中...</Description>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
