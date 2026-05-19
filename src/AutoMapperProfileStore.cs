@@ -1,86 +1,92 @@
-﻿namespace Lycoris.AutoMapper.Extensions
+using AutoMapper;
+using System.Collections.Concurrent;
+
+namespace Lycoris.AutoMapper.Extensions
 {
     internal static class AutoMapperProfileStore
     {
-        private static readonly List<TypeMapper> MapperConfigure = new();
+        private static readonly ConcurrentDictionary<(Type, Type), TypeMapper> MapperConfigure = new();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        internal static void AddOrUpdateSingle<TSource, TDestination>()
+        internal static void AddOrUpdateSingle<TSource, TDestination>(Action<IProfileExpression>? configureAction = null)
+            => AddOrUpdateSingle(typeof(TSource), typeof(TDestination), configureAction);
+
+        internal static void AddOrUpdateSingle(Type source, Type destination, Action<IProfileExpression>? configureAction = null)
         {
-            var source = typeof(TSource);
-            var destination = typeof(TDestination);
-            if (source.FullName != destination.FullName)
+            if (source.FullName == destination.FullName)
+                return;
+
+            MapperConfigure.TryAdd((source, destination), new TypeMapper(source, destination, configureAction));
+        }
+
+        internal static void AddOrUpdate<TSource, TDestination>(Action<IProfileExpression>? configureAction = null)
+            => AddOrUpdate(typeof(TSource), typeof(TDestination), configureAction);
+
+        internal static void AddOrUpdate(Type source, Type destination, Action<IProfileExpression>? configureAction = null)
+        {
+            if (source.FullName == destination.FullName)
+                return;
+
+            MapperConfigure.TryAdd((source, destination), new TypeMapper(source, destination, configureAction));
+            MapperConfigure.TryAdd((destination, source), new TypeMapper(destination, source, null));
+        }
+
+        internal static void AddOrUpdateSingleOrDual<TSource, TDestination>(
+            bool single, Action<IMappingExpression<TSource, TDestination>>? configure = null)
+            where TSource : class where TDestination : class
+        {
+            Action<IProfileExpression>? configureAction = null;
+            if (configure != null)
             {
-                if (!MapperConfigure.Any(x => x.Source == source && x.Destination == destination))
-                    MapperConfigure.Add(new TypeMapper(source, destination));
+                configureAction = profile =>
+                {
+                    var expr = profile.CreateMap<TSource, TDestination>();
+                    configure(expr);
+                };
             }
+
+            if (single)
+                AddOrUpdateSingle<TSource, TDestination>(configureAction);
+            else
+                AddOrUpdate<TSource, TDestination>(configureAction);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        internal static void AddOrUpdateSingle(Type source, Type destination)
+        internal static void AddOrUpdateSingleOrDual(
+            Type source, Type destination,
+            bool single, Action<IMappingExpression>? configure = null)
         {
-            if (source.FullName != destination.FullName && !MapperConfigure.Any(x => x.Source == source && x.Destination == destination))
-                MapperConfigure.Add(new TypeMapper(source, destination));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        internal static void AddOrUpdate<TSource, TDestination>()
-        {
-            var source = typeof(TSource);
-            var destination = typeof(TDestination);
-            if (source.FullName != destination.FullName)
+            Action<IProfileExpression>? configureAction = null;
+            if (configure != null)
             {
-                if (!MapperConfigure.Any(x => x.Source == source && x.Destination == destination))
-                    MapperConfigure.Add(new TypeMapper(source, destination));
-
-                if (!MapperConfigure.Any(x => x.Source == destination && x.Destination == source))
-                    MapperConfigure.Add(new TypeMapper(destination, source));
+                configureAction = profile =>
+                {
+                    var expr = profile.CreateMap(source, destination);
+                    configure(expr);
+                };
             }
+
+            if (single)
+                AddOrUpdateSingle(source, destination, configureAction);
+            else
+                AddOrUpdate(source, destination, configureAction);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        internal static void AddOrUpdate(Type source, Type destination)
-        {
-            if (!MapperConfigure.Any(x => x.Source == source && x.Destination == destination))
-                MapperConfigure.Add(new TypeMapper(source, destination));
-
-            if (!MapperConfigure.Any(x => x.Source == destination && x.Destination == source))
-                MapperConfigure.Add(new TypeMapper(destination, source));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal static List<TypeMapper> GetAllMapperConfigure() => MapperConfigure;
-
+        internal static List<TypeMapper> GetAllMapperConfigure()
+            => MapperConfigure.Values.ToList();
 
         internal class TypeMapper
         {
-            public TypeMapper(Type Source, Type Destination)
+            public TypeMapper(Type Source, Type Destination, Action<IProfileExpression>? ConfigureAction = null)
             {
                 this.Source = Source;
                 this.Destination = Destination;
+                this.ConfigureAction = ConfigureAction;
             }
 
             public Type Source { get; set; }
 
             public Type Destination { get; set; }
+
+            public Action<IProfileExpression>? ConfigureAction { get; set; }
         }
     }
 }

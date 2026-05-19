@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lycoris.AutoMapper.Extensions
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public sealed class MapperBuilder
     {
@@ -13,7 +13,7 @@ namespace Lycoris.AutoMapper.Extensions
         private readonly IServiceCollection services;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="services"></param>
         public MapperBuilder(IServiceCollection services)
@@ -22,36 +22,36 @@ namespace Lycoris.AutoMapper.Extensions
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
         /// <typeparam name="TDestination"></typeparam>
-        /// <param name="single"></param>
+        /// <param name="single">是否单向映射，默认true</param>
+        /// <param name="configure">成员自定义映射配置</param>
         /// <returns></returns>
-        public MapperBuilder AddMapper<TSource, TDestination>(bool single = true) where TSource : class where TDestination : class
+        public MapperBuilder AddMapper<TSource, TDestination>(
+            bool single = true,
+            Action<IMappingExpression<TSource, TDestination>>? configure = null)
+            where TSource : class where TDestination : class
         {
-            if (single)
-                AutoMapperProfileStore.AddOrUpdateSingle<TSource, TDestination>();
-            else
-                AutoMapperProfileStore.AddOrUpdate<TSource, TDestination>();
-
+            AutoMapperProfileStore.AddOrUpdateSingleOrDual<TSource, TDestination>(single, configure);
             return this;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
-        /// <param name="single"></param>
+        /// <param name="single">是否单向映射，默认true</param>
+        /// <param name="configure">成员自定义映射配置</param>
         /// <returns></returns>
-        public MapperBuilder AddMapper(Type source, Type destination, bool single = true)
+        public MapperBuilder AddMapper(
+            Type source, Type destination,
+            bool single = true,
+            Action<IMappingExpression>? configure = null)
         {
-            if (single)
-                AutoMapperProfileStore.AddOrUpdateSingle(source, destination);
-            else
-                AutoMapperProfileStore.AddOrUpdate(source, destination);
-
+            AutoMapperProfileStore.AddOrUpdateSingleOrDual(source, destination, single, configure);
             return this;
         }
 
@@ -63,7 +63,7 @@ namespace Lycoris.AutoMapper.Extensions
         public MapperBuilder AddMapperProfile<T>() where T : Profile
         {
             var type = typeof(T);
-            if (Mapper.Any(x => x != type))
+            if (!Mapper.Any(x => x == type))
                 Mapper.Add(type);
 
             return this;
@@ -71,7 +71,7 @@ namespace Lycoris.AutoMapper.Extensions
 
         /// <summary>
         /// 程序启动后自动引用扩展
-        /// 建议使用：<see cref="AutoMapperExtensions.UseAutoMapperExtensions"/> 手动引用全局扩展
+        /// 建议使用：<see cref="AutoMapperExtensions.UseAutoMapperExtensions(IServiceProvider)"/> 手动引用全局扩展
         /// </summary>
         /// <returns></returns>
         [Obsolete("The automatic reference extension function is too simple and needs to consume a startup task. It is recommended to use 'app.UseAutoMapperExtensions' for extension reference")]

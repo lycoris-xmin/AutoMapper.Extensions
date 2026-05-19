@@ -17,7 +17,7 @@ namespace Lycoris.AutoMapper.Extensions
         {
             bytes ??= 0;
             // 将字节转换为兆字节  
-            return (double)bytes / (1024 * 1024);
+            return (double)bytes.Value / (1024L * 1024L);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Lycoris.AutoMapper.Extensions
         /// <param name="email">邮件地址</param>
         /// <param name="left">邮件头保留字符个数，默认值设置为3</param>
         /// <returns></returns>
-        protected string HideEmailDetails(string email, int left = 3)
+        protected string HideEmailDetails(string? email, int left = 3)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -181,7 +181,86 @@ namespace Lycoris.AutoMapper.Extensions
         }
 
         /// <summary>
-        /// 
+        /// 手机号脱敏（保留前3后4）
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <returns></returns>
+        protected string HidePhoneNumber(string? phone)
+        {
+            if (string.IsNullOrEmpty(phone) || phone.Length < 7)
+                return phone ?? "";
+
+            return phone[..3] + "****" + phone[^4..];
+        }
+
+        /// <summary>
+        /// 身份证号脱敏（保留前3后4）
+        /// </summary>
+        /// <param name="idCard">身份证号</param>
+        /// <returns></returns>
+        protected string HideIdCard(string? idCard)
+        {
+            if (string.IsNullOrEmpty(idCard) || idCard.Length < 7)
+                return idCard ?? "";
+
+            return idCard[..3] + "****" + idCard[^4..];
+        }
+
+        /// <summary>
+        /// 银行卡号脱敏（仅保留后4位）
+        /// </summary>
+        /// <param name="bankCard">银行卡号</param>
+        /// <returns></returns>
+        protected string HideBankCard(string? bankCard)
+        {
+            if (string.IsNullOrEmpty(bankCard) || bankCard.Length <= 4)
+                return bankCard ?? "";
+
+            return "**** **** **** " + bankCard[^4..];
+        }
+
+        /// <summary>
+        /// 修剪空白字符并将空字符串转为null
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        protected string? TrimAndNullIfEmpty(string? str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return null;
+
+            var trimmed = str.Trim();
+            return trimmed.Length == 0 ? null : trimmed;
+        }
+
+        /// <summary>
+        /// Unix毫秒时间戳转DateTime
+        /// </summary>
+        /// <param name="timestamp">Unix毫秒时间戳</param>
+        /// <returns></returns>
+        protected DateTime? UnixTimestampToDateTime(long? timestamp)
+        {
+            if (timestamp == null)
+                return null;
+
+            return DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value).LocalDateTime;
+        }
+
+        /// <summary>
+        /// DateTime转Unix毫秒时间戳
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        protected long? DateTimeToUnixTimestamp(DateTime? dateTime)
+        {
+            if (dateTime == null)
+                return null;
+
+            return new DateTimeOffset(dateTime.Value).ToUnixTimeMilliseconds();
+        }
+
+        /// <summary>
+        ///
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>

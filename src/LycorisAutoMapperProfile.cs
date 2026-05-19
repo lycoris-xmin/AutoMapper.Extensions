@@ -1,14 +1,14 @@
-﻿using AutoMapper;
+using AutoMapper;
 
 namespace Lycoris.AutoMapper.Extensions
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public class LycorisAutoMapperProfile : Profile
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public LycorisAutoMapperProfile()
         {
@@ -18,7 +18,14 @@ namespace Lycoris.AutoMapper.Extensions
             {
                 foreach (var item in mapperConfigure)
                 {
-                    CreateMap(item.Source, item.Destination);
+                    if (item.ConfigureAction != null)
+                    {
+                        item.ConfigureAction(this);
+                    }
+                    else
+                    {
+                        CreateMap(item.Source, item.Destination);
+                    }
                 }
             }
         }

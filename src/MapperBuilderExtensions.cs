@@ -1,15 +1,15 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Lycoris.AutoMapper.Extensions
 {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public static class MapperBuilderExtensions
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
@@ -21,7 +21,7 @@ namespace Lycoris.AutoMapper.Extensions
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configure"></param>
@@ -35,38 +35,40 @@ namespace Lycoris.AutoMapper.Extensions
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
         /// <typeparam name="TDestination"></typeparam>
         /// <param name="services"></param>
-        /// <param name="single"></param>
+        /// <param name="single">是否单向映射，默认false（双向）</param>
+        /// <param name="configure">成员自定义映射配置</param>
         /// <returns></returns>
-        public static IServiceCollection AddMapper<TSource, TDestination>(this IServiceCollection services, bool single = false) where TSource : class where TDestination : class
+        public static IServiceCollection AddMapper<TSource, TDestination>(
+            this IServiceCollection services,
+            bool single = false,
+            Action<IMappingExpression<TSource, TDestination>>? configure = null)
+            where TSource : class where TDestination : class
         {
-            if (single)
-                AutoMapperProfileStore.AddOrUpdateSingle<TSource, TDestination>();
-            else
-                AutoMapperProfileStore.AddOrUpdate<TSource, TDestination>();
-
+            AutoMapperProfileStore.AddOrUpdateSingleOrDual<TSource, TDestination>(single, configure);
             return services;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="services"></param>
         /// <param name="source"></param>
         /// <param name="destination"></param>
-        /// <param name="single"></param>
+        /// <param name="single">是否单向映射，默认false（双向）</param>
+        /// <param name="configure">成员自定义映射配置</param>
         /// <returns></returns>
-        public static IServiceCollection AddMapper(this IServiceCollection services, Type source, Type destination, bool single = false)
+        public static IServiceCollection AddMapper(
+            this IServiceCollection services,
+            Type source, Type destination,
+            bool single = false,
+            Action<IMappingExpression>? configure = null)
         {
-            if (single)
-                AutoMapperProfileStore.AddOrUpdateSingle(source, destination);
-            else
-                AutoMapperProfileStore.AddOrUpdate(source, destination);
-
+            AutoMapperProfileStore.AddOrUpdateSingleOrDual(source, destination, single, configure);
             return services;
         }
 
@@ -79,6 +81,16 @@ namespace Lycoris.AutoMapper.Extensions
         {
             services.AddAutoMapper(opt => opt.AddProfile<T>());
             return services;
+        }
+
+        /// <summary>
+        /// 验证所有AutoMapper映射配置是否有效
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        public static void AssertAutoMapperConfigurationIsValid(this IServiceProvider serviceProvider)
+        {
+            var mapper = serviceProvider.GetRequiredService<IMapper>();
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
         }
     }
 }
