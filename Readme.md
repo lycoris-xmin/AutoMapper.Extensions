@@ -1,14 +1,8 @@
-<h1 align="center">Lycoris.AutoMapper.Extensions</h1>
+# Lycoris.AutoMapper.Extensions
 
-<p align="center">
-  <strong>AutoMapper 的便捷扩展库，提供 Fluent API 注册、全局扩展方法和实用映射工具</strong>
-</p>
+> AutoMapper 的便捷扩展库，提供 Fluent API 注册、全局扩展方法和实用映射工具
 
-<p align="center">
-  <img alt=".NET 8" src="https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet">
-  <img alt="NuGet" src="https://img.shields.io/badge/NuGet-v8.2.0-blue?logo=nuget">
-  <img alt="License" src="https://img.shields.io/badge/license-MIT-green">
-</p>
+[.NET 8](https://dotnet.microsoft.com) &nbsp;|&nbsp; NuGet v8.2.1 &nbsp;|&nbsp; [MIT License](LICENSE)
 
 ---
 
